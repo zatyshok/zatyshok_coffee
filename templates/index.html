@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Затишок — Головна{% endblock %}
+
+{% block content %}
+
+<!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-subtitle">Кав'ярня самообслуговування у Львові</p>
+    <h1 class="hero-title">Тут завжди<br><span>затишно</span></h1>
+    <p class="hero-desc">Замовляйте онлайн через сайт або запитайте нашого AI-асистента — ми приготуємо до вашого приходу.</p>
+    <div class="hero-actions">
+      <a href="{{ url_for('menu') }}" class="btn btn--primary">Переглянути меню</a>
+      <a href="{{ url_for('about') }}" class="btn btn--ghost">Як це працює</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="hero-img-placeholder">☕</div>
+  </div>
+</section>
+
+<!-- ─── Погодний блок ────────────────────────────────────────────────────── -->
+{% if weather_drinks %}
+<section class="section weather-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">{{ weather_label }}</h2>
+      <p class="section-sub">Підбірка на основі поточної погоди у Львові</p>
+    </div>
+    <div class="products-grid products-grid--4">
+      {% for p in weather_drinks %}
+        <div class="product-card">
+          <div class="product-img">{{ p.category.icon }}</div>
+          <div class="product-body">
+            <h3 class="product-name">{{ p.name }}</h3>
+            <p class="product-desc">{{ p.description }}</p>
+            <div class="product-footer">
+              <span class="product-price">{{ p.price|int }} грн</span>
+              <button class="btn btn--sm btn--primary add-to-cart" data-id="{{ p.id }}" data-name="{{ p.name }}">
+                + Додати
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ─── Популярні позиції ─────────────────────────────────────────────────── -->
+{% if popular %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">🔥 Популярне</h2>
+      <a href="{{ url_for('menu') }}" class="section-link">Все меню →</a>
+    </div>
+    <div class="products-grid">
+      {% for p in popular %}
+        <div class="product-card">
+          <div class="product-img">{{ p.category.icon }}</div>
+          <div class="product-body">
+            <span class="product-badge">Хіт</span>
+            <h3 class="product-name">{{ p.name }}</h3>
+            <p class="product-desc">{{ p.description }}</p>
+            <div class="product-footer">
+              <span class="product-price">{{ p.price|int }} грн</span>
+              <button class="btn btn--sm btn--primary add-to-cart" data-id="{{ p.id }}" data-name="{{ p.name }}">
+                + Додати
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ─── Переваги ──────────────────────────────────────────────────────────── -->
+<section class="section features-section">
+  <div class="container">
+    <h2 class="section-title text-center">Чому обирають Затишок</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Онлайн-замовлення</h3>
+        <p>Замовляйте через сайт або мобільний браузер — без черг і очікування</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI-асистент</h3>
+        <p>Запитайте про склад, алергени або отримайте персональну рекомендацію</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3>Сповіщення</h3>
+        <p>Отримуйте статус замовлення в реальному часі — знайте коли забирати</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌤️</div>
+        <h3>Погодні рекомендації</h3>
+        <p>Сайт пропонує гарячі або холодні напої залежно від погоди у Львові</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
