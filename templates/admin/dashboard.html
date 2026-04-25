@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}Адмін-панель — Затишок{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="admin-header">
+      <h1 class="page-title">Адмін-панель</h1>
+      <a href="{{ url_for('admin_menu') }}" class="btn btn--outline">Управління меню →</a>
+    </div>
+
+    <!-- Статистика -->
+    <div class="admin-stats">
+      <div class="stat-card stat-card--admin">
+        <div class="stat-num">{{ stats.total_orders }}</div>
+        <div class="stat-label">Усього замовлень</div>
+      </div>
+      <div class="stat-card stat-card--admin stat-card--active">
+        <div class="stat-num">{{ stats.active_orders }}</div>
+        <div class="stat-label">Активних зараз</div>
+      </div>
+      <div class="stat-card stat-card--admin">
+        <div class="stat-num">{{ stats.total_products }}</div>
+        <div class="stat-label">Позицій у меню</div>
+      </div>
+      <div class="stat-card stat-card--admin">
+        <div class="stat-num">{{ stats.total_users }}</div>
+        <div class="stat-label">Користувачів</div>
+      </div>
+    </div>
+
+    <!-- Список замовлень -->
+    <h2 class="section-title">Замовлення</h2>
+
+    <!-- Фільтр по статусу -->
+    <div class="admin-filter">
+      <button class="filter-btn filter-btn--active" onclick="filterOrders('all')">Всі</button>
+      <button class="filter-btn" onclick="filterOrders('Прийнято')">Прийнято</button>
+      <button class="filter-btn" onclick="filterOrders('Готується')">Готується</button>
+      <button class="filter-btn" onclick="filterOrders('Готове')">Готове</button>
+      <button class="filter-btn" onclick="filterOrders('Видано')">Видано</button>
+    </div>
+
+    <!-- Таблиця для десктопу / Картки для мобільного -->
+    <div class="admin-orders-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Клієнт</th>
+            <th>Позиції</th>
+            <th>Сума</th>
+            <th>Час</th>
+            <th>Статус</th>
+            <th>Дія</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr class="order-row" data-status="{{ order.status }}">
+            <td><strong>#{{ order.id }}</strong></td>
+            <td>
+              {% if order.user %}{{ order.user.name }}
+              {% else %}{{ order.guest_name or 'Гість' }}{% endif %}
+            </td>
+            <td>
+              <ul class="admin-items-list">
+                {% for item in order.items %}
+                  <li>{{ item.product.name }} ×{{ item.quantity }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td><strong>{{ order.total|int }} грн</strong></td>
+            <td>{{ order.created_at.strftime('%d.%m %H:%M') }}</td>
+            <td>
+              <span class="badge badge--{{ order.status|lower|replace(' ', '-') }}">
+                {{ order.status }}
+              </span>
+            </td>
+            <td>
+              <form method="POST"
+                    action="{{ url_for('admin_update_status', order_id=order.id) }}"
+                    class="status-form">
+                <select name="status" class="status-select"
+                        onchange="this.form.submit()">
+                  {% for s in ['Прийнято', 'Готується', 'Готове', 'Видано'] %}
+                    <option value="{{ s }}" {{ 'selected' if order.status == s }}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Мобільні картки замовлень -->
+    <div class="admin-orders-cards">
+      {% for order in orders %}
+      <div class="admin-order-card" data-status="{{ order.status }}">
+        <div class="order-header">
+          <strong>#{{ order.id }}</strong>
+          <span class="badge badge--{{ order.status|lower|replace(' ', '-') }}">{{ order.status }}</span>
+        </div>
+        <p>{{ order.user.name if order.user else (order.guest_name or 'Гість') }}</p>
+        <p><strong>{{ order.total|int }} грн</strong> · {{ order.created_at.strftime('%H:%M') }}</p>
+        <form method="POST" action="{{ url_for('admin_update_status', order_id=order.id) }}">
+          <select name="status" class="status-select" onchange="this.form.submit()">
+            {% for s in ['Прийнято', 'Готується', 'Готове', 'Видано'] %}
+              <option value="{{ s }}" {{ 'selected' if order.status == s }}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterOrders(status) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
+  event.target.classList.add('filter-btn--active');
+  document.querySelectorAll('.order-row, .admin-order-card').forEach(row => {
+    row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+  });
+}
+// Автооновлення кожні 20 секунд
+setTimeout(() => location.reload(), 20000);
+</script>
+{% endblock %}

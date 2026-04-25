@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Меню — Затишок{% endblock %}
+{% block meta_desc %}Повне меню кав'ярні Затишок: гарячі та холодні напої, десерти і снеки. Замовляйте онлайн.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="page-title">Наше меню</h1>
+
+    <!-- Фільтр по категоріях -->
+    <div class="category-tabs" role="tablist">
+      <a href="{{ url_for('menu', category='all') }}"
+         class="tab-btn {{ 'tab-btn--active' if selected == 'all' }}"
+         role="tab">Все</a>
+      {% for cat in categories %}
+        <a href="{{ url_for('menu', category=cat.slug) }}"
+           class="tab-btn {{ 'tab-btn--active' if selected == cat.slug }}"
+           role="tab">{{ cat.icon }} {{ cat.name }}</a>
+      {% endfor %}
+    </div>
+
+    <!-- Сітка продуктів -->
+    <div class="products-grid" id="menu-grid">
+      {% for p in products %}
+        <div class="product-card" data-category="{{ p.category.slug }}">
+          <div class="product-img">{{ p.category.icon }}</div>
+          <div class="product-body">
+            {% if p.is_popular %}<span class="product-badge">Хіт</span>{% endif %}
+            <h2 class="product-name">{{ p.name }}</h2>
+            <p class="product-desc">{{ p.description }}</p>
+            {% if p.allergens %}
+              <p class="product-allergens">⚠️ Алергени: {{ p.allergens }}</p>
+            {% endif %}
+            <div class="product-footer">
+              <span class="product-price">{{ p.price|int }} грн</span>
+              <button class="btn btn--sm btn--primary add-to-cart"
+                      data-id="{{ p.id }}"
+                      data-name="{{ p.name }}">
+                + Додати
+              </button>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <p class="empty-state">У цій категорії поки немає позицій.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

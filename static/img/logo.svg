@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Зовнішнє коло -->
+  <circle cx="32" cy="32" r="30" fill="#6B3A2A"/>
+  <!-- Чашка — тіло -->
+  <rect x="18" y="28" width="24" height="16" rx="4" fill="#FDF8F3"/>
+  <!-- Чашка — ручка -->
+  <path d="M42 32 Q50 32 50 38 Q50 44 42 44" stroke="#FDF8F3" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Пара (3 хвилі) -->
+  <path d="M24 25 Q25.5 22 27 25" stroke="#D4845A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M30 24 Q31.5 21 33 24" stroke="#D4845A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M36 25 Q37.5 22 39 25" stroke="#D4845A" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

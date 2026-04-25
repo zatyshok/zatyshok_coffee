@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Про нас — Затишок{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container container--narrow">
+    <h1 class="page-title">Про кав'ярню</h1>
+
+    <div class="about-intro">
+      <p>Кав'ярня «Затишок» — простір самообслуговування у центрі Львова, де кожен гість може замовити улюблений напій онлайн і забрати готове замовлення без очікування на стійці.</p>
+      <p>Ми поєднали затишну атмосферу традиційної львівської кав'ярні з сучасними технологіями: адаптивним вебінтерфейсом і AI-асистентом, що допомагає з вибором.</p>
+    </div>
+
+    <!-- Як це працює -->
+    <h2 class="section-title">Як зробити замовлення</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Оберіть страви</h3>
+        <p>Перегляньте меню або запитайте AI-асистента — він підбере напій за вашим смаком</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Оформіть замовлення</h3>
+        <p>Додайте позиції до кошика та підтвердіть замовлення в один клік</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Слідкуйте за статусом</h3>
+        <p>Отримуйте повідомлення про готовність замовлення в реальному часі</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>Заберіть готове</h3>
+        <p>Підійдіть до стійки — ваше замовлення вже чекає на вас</p>
+      </div>
+    </div>
+
+    <!-- Контакти -->
+    <h2 class="section-title">Контакти та адреса</h2>
+    <div class="contacts-grid">
+      <div class="contact-info">
+        <div class="contact-item">📍 <span>вул. Дорошенка, 21, Львів, 79000</span></div>
+        <div class="contact-item">📞 <span>+38 (032) 241-00-00</span></div>
+        <div class="contact-item">✉️ <span>hello@zatyshok.ua</span></div>
+        <div class="contact-item">🕐 <span>Пн–Нд: 08:00 – 22:00</span></div>
+      </div>
+      <div class="map-placeholder">
+        <div class="map-stub">🗺️<br>Карта<br><small>вул. Дорошенка, 21</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

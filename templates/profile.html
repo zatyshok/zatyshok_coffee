@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Особистий кабінет — Затишок{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container container--narrow">
+    <h1 class="page-title">Кабінет</h1>
+
+    <!-- Інфо про користувача -->
+    <div class="profile-card">
+      <div class="profile-avatar">{{ user.name[0]|upper }}</div>
+      <div class="profile-info">
+        <h2>{{ user.name }}</h2>
+        <p>{{ user.email }}</p>
+        <p class="profile-since">Клієнт з {{ user.created_at.strftime('%d.%m.%Y') }}</p>
+      </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="profile-stats">
+      <div class="stat-card">
+        <div class="stat-num">{{ orders|length }}</div>
+        <div class="stat-label">Замовлень</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">
+          {{ orders|selectattr('status', 'equalto', 'Видано')|list|length }}
+        </div>
+        <div class="stat-label">Виконано</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">
+          {{ orders|map(attribute='total')|sum|int }}
+        </div>
+        <div class="stat-label">Грн витрачено</div>
+      </div>
+    </div>
+
+    <!-- Активні замовлення -->
+    {% set active = orders|selectattr('status', 'ne', 'Видано')|list %}
+    {% if active %}
+    <h2 class="section-title">Активні замовлення</h2>
+    {% for order in active %}
+    <div class="order-card order-card--active" id="order-{{ order.id }}">
+      <div class="order-header">
+        <span class="order-num">Замовлення #{{ order.id }}</span>
+        <span class="order-status order-status--{{ order.status|lower|replace(' ', '-') }}">
+          {{ order.status }}
+        </span>
+      </div>
+      <ul class="order-items-list">
+        {% for item in order.items %}
+          <li>{{ item.product.name }} × {{ item.quantity }} — {{ (item.price_at_order * item.quantity)|int }} грн</li>
+        {% endfor %}
+      </ul>
+      <div class="order-footer">
+        <span>Разом: <strong>{{ order.total|int }} грн</strong></span>
+        <span class="order-date">{{ order.created_at.strftime('%d.%m %H:%M') }}</span>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Історія -->
+    {% set history = orders|selectattr('status', 'equalto', 'Видано')|list %}
+    {% if history %}
+    <h2 class="section-title">Історія замовлень</h2>
+    {% for order in history %}
+    <div class="order-card">
+      <div class="order-header">
+        <span class="order-num">Замовлення #{{ order.id }}</span>
+        <span class="order-status order-status--видано">✓ Видано</span>
+      </div>
+      <div class="order-footer">
+        <span>{{ order.total|int }} грн</span>
+        <span class="order-date">{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if not orders %}
+    <div class="empty-state">
+      <p>Замовлень поки немає.</p>
+      <a href="{{ url_for('menu') }}" class="btn btn--primary">Перейти до меню</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Автоматичне оновлення статусу активних замовлень кожні 15 секунд
+{% set active = orders|selectattr('status', 'ne', 'Видано')|list %}
+{% if active %}
+const activeIds = [{% for o in active %}{{ o.id }}{% if not loop.last %},{% endif %}{% endfor %}];
+setInterval(async () => {
+  for (const id of activeIds) {
+    const res = await fetch(`/api/order-status/${id}`);
+    const data = await res.json();
+    const el = document.querySelector(`#order-${id} .order-status`);
+    if (el && el.textContent.trim() !== data.status) {
+      el.textContent = data.status;
+      if (data.status === 'Готове') {
+        el.style.background = 'var(--color-success)';
+        el.style.color = '#fff';
+      }
+    }
+  }
+}, 15000);
+{% endif %}
+</script>
+{% endblock %}

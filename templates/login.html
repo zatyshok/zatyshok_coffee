@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Реєстрація' if mode == 'register' else 'Вхід' }} — Затишок{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container container--xs">
+    <div class="auth-card">
+      <!-- Таби: вхід / реєстрація -->
+      <div class="auth-tabs">
+        <a href="{{ url_for('login') }}"
+           class="auth-tab {{ 'auth-tab--active' if mode == 'login' }}">Увійти</a>
+        <a href="{{ url_for('register') }}"
+           class="auth-tab {{ 'auth-tab--active' if mode == 'register' }}">Зареєструватись</a>
+      </div>
+
+      {% if mode == 'login' %}
+      <form class="auth-form" method="POST" action="{{ url_for('login') }}" novalidate>
+        <div class="form-group">
+          <label for="email">Електронна адреса</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com"
+                 required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="password">Пароль</label>
+          <input type="password" id="password" name="password"
+                 placeholder="Введіть пароль" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">Увійти</button>
+        <p class="auth-hint">
+          Немає акаунту? <a href="{{ url_for('register') }}">Зареєструйтесь</a>
+        </p>
+        <p class="auth-hint">
+          <small>Тестовий вхід: <code>user@zatyshok.ua / user123</code></small>
+        </p>
+      </form>
+
+      {% else %}
+      <form class="auth-form" method="POST" action="{{ url_for('register') }}" novalidate>
+        <div class="form-group">
+          <label for="name">Ім'я</label>
+          <input type="text" id="name" name="name" placeholder="Ваше ім'я"
+                 required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="email">Електронна адреса</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com"
+                 required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="password">Пароль</label>
+          <input type="password" id="password" name="password"
+                 placeholder="Мінімум 6 символів" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label for="confirm">Підтвердження паролю</label>
+          <input type="password" id="confirm" name="confirm"
+                 placeholder="Повторіть пароль" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">Зареєструватись</button>
+        <p class="auth-hint">
+          Вже є акаунт? <a href="{{ url_for('login') }}">Увійдіть</a>
+        </p>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
